@@ -291,6 +291,7 @@ class Exchange:
             and exchange_conf.get("enable_ws", True)
             and _has_watch_ohlcv
         ):
+            # WebSocket 也需要使用相同的代理配置
             self._ws_async = self._init_ccxt(exchange_conf, False, ccxt_async_config)
             self._exchange_ws = ExchangeWS(self._config, self._ws_async)
 
