@@ -276,6 +276,14 @@ class Exchange:
         ccxt_async_config = deep_merge_dicts(
             exchange_conf.get("ccxt_async_config", {}), ccxt_async_config
         )
+        
+        # 修复异步代理问题：明确设置 aiohttp_proxy
+        if "proxies" in ccxt_async_config and ccxt_async_config["proxies"]:
+            proxy_url = ccxt_async_config["proxies"].get("https") or ccxt_async_config["proxies"].get("http")
+            if proxy_url:
+                ccxt_async_config["aiohttp_proxy"] = proxy_url
+                logger.info(f"Setting aiohttp_proxy to: {proxy_url}")
+        
         self._api_async = self._init_ccxt(exchange_conf, False, ccxt_async_config)
         _has_watch_ohlcv = self.exchange_has("watchOHLCV") and self._ft_has["ws_enabled"]
         if (
